@@ -19,7 +19,18 @@
   <main>
     <img src="icon.png" width="200" height="200" alt="konjac">
     <h1>konjac-api</h1>
-    <p>Self-Hosting Free Google Translate API<br>by Google Apps Script (see <a href="https://github.com/wata/apps-script-konjac-api">documentation</a>).</p>
+    <p>
+      Self-Hosting Free Google Translate API by Google Apps Script (see <a href="https://github.com/wata/apps-script-konjac-api">documentation</a>).
+    </p>
+    <p class="help">
+      1. If you have not yet enabled Google Apps Script API, you need to enable it<br>
+      by visiting <a href="https://script.google.com/home/usersettings" target="_blank" rel="noreferrer noopener"><strong>here</strong></a>. You can revert to disable it after installation is complete.
+    </p>
+    <p class="help">
+      2. When you click this button, the message "This application has not been verified"<br>
+      is displayed. Because this app hasn't been verified by Google yet. However, you can<br>
+      check all source code on <a href="https://github.com/wata/konjac-farm">GitHub</a>.
+    </p>
     <button id="install-button">Install with Google</button>
     <pre id="content"></pre>
   </main>
@@ -83,15 +94,19 @@
      *
      * @param {string} message Text to be placed in pre element.
      */
-    function appendPre(message) {
+    function appendPre(message, status) {
       var pre = document.getElementById('content');
-      var textContent = document.createTextNode(message + '\n');
-      pre.appendChild(textContent);
+      var span = document.createElement('span');
+      span.textContent = message + '\n';
+      if (status) {
+        span.className = status >= 200 && status < 300 ? 'success' : 'danger';
+      }
+      pre.appendChild(span);
     }
 
     function install() {
       let project;
-
+      appendPre('Please wait');
       getJSON('konjac-api.json').then(data => {
         project = data;
         return gapi.client.script.projects.create({
@@ -100,38 +115,35 @@
           }
         });
       }).then(res => {
-        let result = res.result;
-        if (result.error) throw result.error;
+        appendPre('.');
         return gapi.client.script.projects.updateContent({
-          scriptId: result.scriptId,
+          scriptId: res.result.scriptId,
           resource: project
         });
       }).then(res => {
-        let result = res.result;
-        if (result.error) throw result.error;
+        appendPre('.');
         return gapi.client.script.projects.versions.create({
-          scriptId: result.scriptId,
+          scriptId: res.result.scriptId,
           resource: {
             versionNumber: 1
           }
         });
       }).then(res => {
-        let result = res.result;
-        if (result.error) throw result.error;
+        appendPre('.');
         return gapi.client.script.projects.deployments.create({
-          scriptId: result.scriptId,
+          scriptId: res.result.scriptId,
           resource: {
             versionNumber: 1
           }
         });
       }).then(res => {
-        let result = res.result;
-        if (result.error) throw result.error;
-        appendPre('✅Install Succeeded');
+        appendPre('Successfully installed konjac-api🎉', res.status);
         appendPre('');
-        appendPre(`curl -L -d "text=konjac&target=ja" ${result.entryPoints[0].webApp.url}`);
-      }).catch((error) => {
-        console.log(error);
+        appendPre(`curl -L -d "text=konjac&target=ja" ${res.result.entryPoints[0].webApp.url}`);
+      }).catch((e) => {
+        error = e.result && e.result.error ? e.result.error : e;
+        appendPre(error.message, error.status);
+        console.error(error);
       });
     }
 
