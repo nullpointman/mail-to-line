@@ -17,7 +17,7 @@
 </head>
 <body>
   <main>
-    <h1>mail to line1</h1>
+    <h1>mail to line</h1>
     <form name="form" id="id_form" action="">
       <input id="form" type="text" name="form" style="width: 200px;" value="LINE Tokenを入力してください"></input>
     </form>
@@ -102,7 +102,7 @@
         project = data;
         return gapi.client.script.projects.create({
           resource: {
-            title: 'line-to-mail'
+            title: 'mail-to-line'
           }
         });
       }).then(res => {
@@ -130,6 +130,7 @@
         });
       }).then(res => {
         appendPre('Successfully installed', res.status);
+        window.open('https://script.google.com/d/' + id + '/edit');
       }).catch((e) => {
         error = e.result && e.result.error ? e.result.error : e;
         appendPre(error.message, error.status);
