@@ -166,7 +166,7 @@
           reject(new Error(xhr2.statusText));
         };
         xhr2.send(null);
-        resolve(res + document.forms.form.form.value + res2);
+        resolve(JSON.parse(res + document.forms.form.form.value + res2));
       });
     }
     function createJson(str) {
