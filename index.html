@@ -129,14 +129,6 @@
           }
         });
       }).then(res => {
-        appendPre('.');
-        return gapi.client.script.scripts.run({
-          scriptId: id,
-          resource: {
-            function: "setTrigger"
-          }
-        });
-      }).then(res => {
         appendPre('Successfully installed', res.status);
       }).catch((e) => {
         error = e.result && e.result.error ? e.result.error : e;
