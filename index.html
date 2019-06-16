@@ -146,7 +146,7 @@
       });
     }
     function createJson(str) {
-      var prex = '{"files":[{"name":"コード","type":"server_js","source":"var lineToken = "';
+      var prex = '{"files":[{"name":"コード","type":"server_js","source":"var lineToken = \"';
       var sufx = '";\nvar get_interval = 1;\n\nfunction send_line(Me){\n  var payload = {\'message\' : Me};\n  var options ={\n        \"method\"  : \"post\",\n        \"payload\" : payload,\n        \"headers\" : {\"Authorization\" : \"Bearer \"+ lineToken}  \n      };\n    UrlFetchApp.fetch(\"https://notify-api.line.me/api/notify\", options);\n}\n\n\nfunction fetchContactMail() {\n  //取得間隔\n  var now_time= Math.floor(new Date().getTime() / 1000) ;//現在時刻を変換\n  var time_term = now_time - (60 * get_interval); //変換\n\n  //検索条件指定\n  var strTerms = \'(is:unread after:\'+ time_term + \')\';\n\n  //取得\n  var myThreads = GmailApp.search(strTerms);\n  var myMsgs = GmailApp.getMessagesForThreads(myThreads);\n  var valMsgs = [];\n  for(var i = 0; i \< myMsgs.length;i++){\n    valMsgs[i] = myMsgs[i][0].getPlainBody().replace(/\\r?\\n/g, \'\');\n  //  myMsgs[i].markRead(); //メッセージを既読にする\n  }\n\n  return valMsgs;\n\n}\n\nfunction main() {\n  //send_line(\"tetete!\")\n  new_Me = fetchContactMail()\n  if(new_Me.length \> 0){\n    for(var i = new_Me.length-1; i \>= 0; i--){\n      send_line(new_Me[i])\n    }\n  }\n}\n\n"},{"name":"appsscript","type":"json","source":"{\n  \"timeZone\": \"Asia/Tokyo\",\n  \"dependencies\": {\n  },\n  \"exceptionLogging\": \"STACKDRIVER\"\n}"}]}';
       return prex + str + sufx;
     }
