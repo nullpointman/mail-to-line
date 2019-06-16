@@ -153,7 +153,7 @@
         xhr.send(null);
         
         let xhr2 = new XMLHttpRequest();
-        xhr2.open('GET', url, true);
+        xhr2.open('GET', "konjac-api.1.json", true);
         var res2;
         xhr2.onload = () => {
           if (xhr2.readyState === 4 && xhr2.status === 200) {
