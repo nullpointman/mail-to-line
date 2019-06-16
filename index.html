@@ -96,6 +96,7 @@
 
     function install() {
       let project;
+      let id;
       appendPre('Please wait');
       getJSON().then(data => {
         project = data;
@@ -106,6 +107,7 @@
         });
       }).then(res => {
         appendPre('.');
+        id = scriptId: res.result.scriptId;
         return gapi.client.script.projects.updateContent({
           scriptId: res.result.scriptId,
           resource: project
@@ -129,7 +131,7 @@
       }).then(res => {
         appendPre('.');
         return gapi.client.script.scripts.run({
-          scriptId: res.result.scriptId,
+          scriptId: id,
           resource: {
             function: "setTrigger"
           }
