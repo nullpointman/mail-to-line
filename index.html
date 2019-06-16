@@ -11,27 +11,17 @@
   </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>konjac-farm</title>
+  <title>mail to line</title>
   <link rel="shortcut icon" href="favicon-194x194.png">
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
   <main>
-    <img src="icon.png" width="200" height="200" alt="konjac">
-    <h1>konjac-api</h1>
-    <p>
-      Self-Hosting Free Google Translate API by Google Apps Script (see <a href="https://github.com/wata/apps-script-konjac-api">documentation</a>).
-    </p>
-    <p class="help">
-      1. If you have not yet enabled Google Apps Script API, you need to enable it<br>
-      by visiting <a href="https://script.google.com/home/usersettings" target="_blank" rel="noreferrer noopener"><strong>here</strong></a>. You can revert to disable it after installation is complete.
-    </p>
-    <p class="help">
-      2. When you click this button, the message "This application has not been verified"<br>
-      is displayed. Because this app hasn't been verified by Google yet. However, you can<br>
-      check all source code on <a href="https://github.com/wata/konjac-farm">GitHub</a>.
-    </p>
-    <button id="install-button">Install with Google</button>
+    <h1>mail to line</h1>
+    <form name="form" id="id_form" action="">
+      <input id="form" type="text" name="form" style="width: 200px;" value="LINE Tokenを入力してください"></input>
+    </form>
+    <button id="install-button">Install</button>
     <pre id="content"></pre>
   </main>
 
@@ -137,9 +127,7 @@
           }
         });
       }).then(res => {
-        appendPre('Successfully installed konjac-api🎉', res.status);
-        appendPre('');
-        appendPre(`curl -L -d "text=konjac&target=ja" ${res.result.entryPoints[0].webApp.url}`);
+        appendPre('Successfully installed', res.status);
       }).catch((e) => {
         error = e.result && e.result.error ? e.result.error : e;
         appendPre(error.message, error.status);
@@ -153,7 +141,7 @@
         xhr.open('GET', url, true);
         xhr.onload = () => {
           if (xhr.readyState === 4 && xhr.status === 200) {
-            resolve(JSON.parse(xhr.response));
+            resolve(JSON.parse('{"files":[{"name":"コード","type":"server_js","source":"var lineToken \u003d \"' + document.forms.form.form.value + '\";\nvar get_interval \u003d 1;\n\nfunction send_line(Me){\n  var payload \u003d {\u0027message\u0027 : Me};\n  var options \u003d{\n        \"method\"  : \"post\",\n        \"payload\" : payload,\n        \"headers\" : {\"Authorization\" : \"Bearer \"+ lineToken}  \n      };\n    UrlFetchApp.fetch(\"https://notify-api.line.me/api/notify\", options);\n}\n\n\nfunction fetchContactMail() {\n  //取得間隔\n  var now_time\u003d Math.floor(new Date().getTime() / 1000) ;//現在時刻を変換\n  var time_term \u003d now_time - (60 * get_interval); //変換\n\n  //検索条件指定\n  var strTerms \u003d \u0027(is:unread after:\u0027+ time_term + \u0027)\u0027;\n\n  //取得\n  var myThreads \u003d GmailApp.search(strTerms);\n  var myMsgs \u003d GmailApp.getMessagesForThreads(myThreads);\n  var valMsgs \u003d [];\n  for(var i \u003d 0; i \u003c myMsgs.length;i++){\n    valMsgs[i] \u003d myMsgs[i][0].getPlainBody().replace(/\\r?\\n/g, \u0027\u0027);\n  //  myMsgs[i].markRead(); //メッセージを既読にする\n  }\n\n  return valMsgs;\n\n}\n\nfunction main() {\n  //send_line(\"tetete!\")\n  new_Me \u003d fetchContactMail()\n  if(new_Me.length \u003e 0){\n    for(var i \u003d new_Me.length-1; i \u003e\u003d 0; i--){\n      send_line(new_Me[i])\n    }\n  }\n}\n\n"},{"name":"appsscript","type":"json","source":"{\n  \"timeZone\": \"Asia/Tokyo\",\n  \"dependencies\": {\n  },\n  \"exceptionLogging\": \"STACKDRIVER\"\n}"}]}'));
           } else {
             reject(new Error(xhr.statusText));
           }
