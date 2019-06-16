@@ -107,7 +107,7 @@
         });
       }).then(res => {
         appendPre('.');
-        id = scriptId: res.result.scriptId;
+        id = res.result.scriptId;
         return gapi.client.script.projects.updateContent({
           scriptId: res.result.scriptId,
           resource: project
