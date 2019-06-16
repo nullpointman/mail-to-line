@@ -17,7 +17,7 @@
 </head>
 <body>
   <main>
-    <h1>mail to line5</h1>
+    <h1>mail to line</h1>
     <form name="form" id="id_form" action="">
       <input id="form" type="text" name="form" style="width: 200px;" value="LINE Tokenを入力してください"></input>
     </form>
@@ -128,7 +128,7 @@
         });
       }).then(res => {
         appendPre('.');
-        return gapi.client.scripts.run({
+        return gapi.client.script.run({
           scriptId: res.result.scriptId,
           resource: {
             function: "setTrigger"
